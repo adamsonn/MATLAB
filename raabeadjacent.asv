@@ -3,20 +3,20 @@
 %SingleBifucprop(.5*10^-4,LDP(10,1)*10^-2,LDP(10,2)*10^-2,LDP(10,3),100)
 adjmatrix=zeros(length(LDP)+1,length(LDP)+1);
 i=1;
-Q=5.360000000000000e-03;
+Q=5.360000000000000e-04;
 while i<length(LDP)+1
-    adjmatrix(i,(length(LDP)+1))=SingleBifucprop(Q*.5^max(ceil(log10(abs(LDP(i,4))))),LDP(i,1)*10^-2,LDP(i,2)*10^-2,LDP(i,3),100);
-    if i<(length(LDP)+1)/2
+    adjmatrix(i,16)=SingleBifucprop(Q*.5^max(ceil(log10(abs(LDP(i,4))))),LDP(i,1)*10^-2,LDP(i,2)*10^-2,LDP(i,3),100);
+    if i<length(LDP)+1/2
         adjmatrix(i,2*i)=(1-(SingleBifucprop(Q*.5^max(ceil(log10(abs(LDP(i,4))))),LDP(i,1)*10^-2,LDP(i,2)*10^-2,LDP(i,3),100)))/2;
         adjmatrix(i,2*i+1)=(1-(SingleBifucprop(Q*.5^max(ceil(log10(abs(LDP(i,4))))),LDP(i,1)*10^-2,LDP(i,2)*10^-2,LDP(i,3),100)))/2;
     else
-        adjmatrix(i,(length(LDP)+1))=1;
+        adjmatrix(i,16)=1;
     end
     i=i+1;
     
 end
-adjmatrix((length(LDP)+1),1)=0;
-adjmatrix((length(LDP)+1),(length(LDP)+1))=1;
+adjmatrix(16,1)=0;
+adjmatrix(16,16)=1;
 mc = dtmc(adjmatrix);
 
 stateNames = ["Deposit" "1" "11" "12" "111" "112" "121" "122" "Escape"];
