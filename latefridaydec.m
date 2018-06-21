@@ -117,7 +117,8 @@ end
 for i=1:length(Q) 
     totalprob(i)=1-(1-Pi(i))*(1-Pd(i))*(1-Ps(i)); 
 end 
-  
+
+Q=Q*1000;
 plot(Q,totalprob,'LineWidth',3) 
   
 hold on  
@@ -128,7 +129,7 @@ plot(Q,Pd,'LineWidth',3)
 legend('Totalprob','Impaction','Gravity','Diffusion') 
   
 title('Length of tube=23cm Dtube=1.8cm Dparticle=3.5 micron') 
-xlabel('Flow rate m^3/s') 
+xlabel('Flow rate L/s') 
 ylabel('Probability of Capture') 
   
 hold off 
