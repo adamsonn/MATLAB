@@ -5,10 +5,10 @@ adjmatrix=zeros(length(LDP)+1,length(LDP)+1);
 i=1;
 Q=maxflow;
 while i<length(LDP)+1
-    adjmatrix(i,(length(LDP)+1))=SingleBifucprop(Q*.5^max(ceil(log10(abs(LDP(i,4))))),LDP(i,1)*10^-2,LDP(i,2)*10^-2,LDP(i,3),100);
+    adjmatrix(i,(length(LDP)+1))=abs(real(SingleBifucprop(treeflow(i),LDP(i,1)*10^-2,LDP(i,2)*10^-2,LDP(i,3),100)));
     if i<(length(LDP)+1)/2
-        adjmatrix(i,2*i)=(1-(SingleBifucprop(Q*.5^max(ceil(log10(abs(LDP(i,4))))),LDP(i,1)*10^-2,LDP(i,2)*10^-2,LDP(i,3),100)))/2;
-        adjmatrix(i,2*i+1)=(1-(SingleBifucprop(Q*.5^max(ceil(log10(abs(LDP(i,4))))),LDP(i,1)*10^-2,LDP(i,2)*10^-2,LDP(i,3),100)))/2;
+        adjmatrix(i,2*i)=abs(real((1-(SingleBifucprop(treeflow(i),LDP(i,1)*10^-2,LDP(i,2)*10^-2,LDP(i,3),100)))/2));
+        adjmatrix(i,2*i+1)=abs(real((1-(SingleBifucprop(treeflow(i),LDP(i,1)*10^-2,LDP(i,2)*10^-2,LDP(i,3),100)))/2));
     else
         adjmatrix(i,(length(LDP)+1))=1;
     end
@@ -42,7 +42,7 @@ simplot(mc,X,'Type','transitions');
 %colorbar;
 
 figure;
-eVals = eigplot(mc)
+eVals = eigplot(mc);
 
 [bins,~,ClassRecurrence] = classify(mc);
 recurrentClass = find(ClassRecurrence,1) ;
@@ -58,12 +58,12 @@ graphplot(sc,'ColorNodes',true);
 i=1;
 y=[1:15];
 
-a=zeros(1,length(X));
+b=zeros(1,length(X));
 while i<=length(X)
     
-    a(i)=length(unique(X(:,i)))-1;
+    b(i)=length(unique(X(:,i)))-1;
     i=i+1;
 end
 
-mean(a)
+mean(b)
 

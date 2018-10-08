@@ -6,7 +6,7 @@ generationname=99;
 
 i=1;
 
-y=objectivefunction(LDP(2,1)*10^-2,LDP(2,2)*10^-2,LDP(2,3),1);
+y=objectivefunctionnosym(LDP(2,1)*10^-2,LDP(2,2)*10^-2,LDP(2,3),1);
 
 while i<length(LDP(:,1))
    
@@ -19,7 +19,7 @@ values=zeros(1,length(q));
 
 
 
-i=1
+i=1;
 
 while i<=length(q);
 values(i)=ht(q(i));
@@ -31,7 +31,7 @@ end
 i=i+1;
 end
 
-plot(q,values)
+%plot(q,values)
 i=1;
 path=1;
 while generationname>1
@@ -41,12 +41,12 @@ while generationname>1
     
     i=i+1;
 end
-i
+i;
 path=flip([path,1]);
 
 i=1;
 while i<=length(path)
-    cascadeprop(i)=objectivefunction(LDP(path(i),1)*10^-2,LDP(path(i),2)*10^-2,LDP(path(i),3),i);
+    cascadeprop(i)=objectivefunctionnosym(LDP(path(i),1)*10^-2,LDP(path(i),2)*10^-2,LDP(path(i),3),i);
     pathvolume(i)=Volumetube(path(i));
     i=i+1;
 end
