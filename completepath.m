@@ -38,7 +38,7 @@ i=1;
 
 Q=[0.5*10^-5:1*10^-5:10*10^-4];
 while i<length(LDP)+1
-    propline=(real(SingleBifucprop([0.5*10^-5:1*10^-5:10*10^-4],LDP(i,1)*10^-2,LDP(i,2)*10^-2,LDP(i,3),LDP(i,4))));
+    propline=(real(SingleBifucprop([0.5*10^-5:1*10^-5:10*10^-4],LDP(i,1)*10^-3,LDP(i,2)*10^-3,LDP(i,3),LDP(i,4))));
     [chance,index]=min(propline);
     optimalflow(i)=Q(index);
     i=i+1;
@@ -66,10 +66,10 @@ end
 adjmatrix=zeros(length(LDP)+1,length(LDP)+1);
 i=1;
 while i<length(LDP)+1
-    adjmatrix(i,(length(LDP)+1))=abs(real(SingleBifucprop(optimalflow(i),LDP(i,1)*10^-2,LDP(i,2)*10^-2,LDP(i,3),100)));
+    adjmatrix(i,(length(LDP)+1))=abs(real(SingleBifucprop(optimalflow(i),LDP(i,1)*10^-3,LDP(i,2)*10^-3,LDP(i,3),100)));
     if i<(length(LDP)+1)/2
-        adjmatrix(i,2*i)=abs(real((1-(SingleBifucprop(optimalflow(i),LDP(i,1)*10^-2,LDP(i,2)*10^-2,LDP(i,3),100)))/2));
-        adjmatrix(i,2*i+1)=abs(real((1-(SingleBifucprop(optimalflow(i),LDP(i,1)*10^-2,LDP(i,2)*10^-2,LDP(i,3),100)))/2));
+        adjmatrix(i,2*i)=abs(real((1-(SingleBifucprop(optimalflow(i),LDP(i,1)*10^-3,LDP(i,2)*10^-3,LDP(i,3),100)))/2));
+        adjmatrix(i,2*i+1)=abs(real((1-(SingleBifucprop(optimalflow(i),LDP(i,1)*10^-3,LDP(i,2)*10^-3,LDP(i,3),100)))/2));
     else
         adjmatrix(i,(length(LDP)+1))=1;
     end
@@ -128,5 +128,5 @@ end
 
 mean(a)
 
-
+sum(a(:) == 6)/10000
 

@@ -4,11 +4,12 @@
 adjmatrix=zeros(length(LDP)+1,length(LDP)+1);
 i=1;
 Q=maxflow;
+treeflow=treeflow/10;
 while i<length(LDP)+1
-    adjmatrix(i,(length(LDP)+1))=abs(real(SingleBifucprop(treeflow(i),LDP(i,1)*10^-2,LDP(i,2)*10^-2,LDP(i,3),100)));
+    adjmatrix(i,(length(LDP)+1))=abs(real(SingleBifucprop(treeflow(i),LDP(i,1)*10^-3,LDP(i,2)*10^-3,LDP(i,3),100)));
     if i<(length(LDP)+1)/2
-        adjmatrix(i,2*i)=abs(real((1-(SingleBifucprop(treeflow(i),LDP(i,1)*10^-2,LDP(i,2)*10^-2,LDP(i,3),100)))/2));
-        adjmatrix(i,2*i+1)=abs(real((1-(SingleBifucprop(treeflow(i),LDP(i,1)*10^-2,LDP(i,2)*10^-2,LDP(i,3),100)))/2));
+        adjmatrix(i,2*i)=abs(real((1-(SingleBifucprop(treeflow(i),LDP(i,1)*10^-3,LDP(i,2)*10^-3,LDP(i,3),100)))/2));
+        adjmatrix(i,2*i+1)=abs(real((1-(SingleBifucprop(treeflow(i),LDP(i,1)*10^-3,LDP(i,2)*10^-3,LDP(i,3),100)))/2));
     else
         adjmatrix(i,(length(LDP)+1))=1;
     end
@@ -67,3 +68,4 @@ end
 
 mean(b)
 
+sum(b(:) == 6)/10000

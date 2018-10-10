@@ -1,4 +1,3 @@
-clear 
 %Gravitatonal Constant m/s^2 
 gravity=9.81; 
   
@@ -33,12 +32,12 @@ Tsettling=densityp*gravity*diameterp.^2/(18*kinematicviscosity);
 N=1; 
   
 %Tube Diamter (meters) 
-d=10*10^-3; 
+d=LDP(1,2)*10^-3; 
   
   
   
 %Tube Length (meters) 
-L=10*10^-2; 
+L=LDP(1,1)*10^-3; 
   
 %Fluid Velocity (average) 
 Vfluid=Q/(pi*(d/2)^2); 
