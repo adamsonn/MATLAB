@@ -1,7 +1,7 @@
 function [uppath] = pathback(n)
 %UNTITLED13 Summary of this function goes here
 %   Detailed explanation goes here
-uppath(1)=n
+uppath(1)=n;
 i=2;
 while n>1
     if mod(n,2)==0

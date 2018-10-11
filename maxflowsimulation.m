@@ -4,7 +4,7 @@
 adjmatrix=zeros(length(LDP)+1,length(LDP)+1);
 i=1;
 Q=maxflow;
-treeflow=treeflow/10;
+treeflow=treeflow;
 while i<length(LDP)+1
     adjmatrix(i,(length(LDP)+1))=abs(real(SingleBifucprop(treeflow(i),LDP(i,1)*10^-3,LDP(i,2)*10^-3,LDP(i,3),100)));
     if i<(length(LDP)+1)/2

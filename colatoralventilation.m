@@ -77,6 +77,16 @@ while i<length(LDP)+1
     
 end
 
+i=1;
+rng(5)
+while i<6
+    a=randi([32 63],1);
+    b=randi([32 63],1);
+    adjmatrix(a,b)=.5;
+    adjmatrix(a,64)=.5;
+    i=i+1;
+end
+
 
 adjmatrix((length(LDP)+1),1)=0;
 adjmatrix((length(LDP)+1),(length(LDP)+1))=1;
@@ -119,7 +129,6 @@ graphplot(sc,'ColorNodes',true);
 
 %avg path length for simulation
 i=1;
-y=[1:15];
 
 a=zeros(1,length(X));
 while i<=length(X)
