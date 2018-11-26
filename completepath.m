@@ -66,10 +66,10 @@ end
 adjmatrix=zeros(length(LDP)+1,length(LDP)+1);
 i=1;
 while i<length(LDP)+1
-    adjmatrix(i,(length(LDP)+1))=abs(real(SingleBifucprop(optimalflow(i),LDP(i,1)*10^-3,LDP(i,2)*10^-3,LDP(i,3),100)));
+    adjmatrix(i,(length(LDP)+1))=abs(real(SingleBifucprop(optimalflow(i),LDP(i,1)*10^-3,LDP(i,2)*10^-3,LDP(i,3),LDP(LDP(i,5),2))));
     if i<(length(LDP)+1)/2
-        adjmatrix(i,2*i)=abs(real((1-(SingleBifucprop(optimalflow(i),LDP(i,1)*10^-3,LDP(i,2)*10^-3,LDP(i,3),100)))/2));
-        adjmatrix(i,2*i+1)=abs(real((1-(SingleBifucprop(optimalflow(i),LDP(i,1)*10^-3,LDP(i,2)*10^-3,LDP(i,3),100)))/2));
+        adjmatrix(i,2*i)=abs(real((1-(SingleBifucprop(optimalflow(i),LDP(i,1)*10^-3,LDP(i,2)*10^-3,LDP(LDP(i,5),2)))/2)));
+        adjmatrix(i,2*i+1)=abs(real((1-(SingleBifucprop(optimalflow(i),LDP(i,1)*10^-3,LDP(i,2)*10^-3,LDP(LDP(i,5),2)))/2)));
     else
         adjmatrix(i,(length(LDP)+1))=1;
     end

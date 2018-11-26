@@ -3,6 +3,9 @@ function [uppath] = pathback(n)
 %   Detailed explanation goes here
 uppath(1)=n;
 i=2;
+if n==1
+    uppath=[1 1];
+end
 while n>1
     if mod(n,2)==0
         uppath(i) = n/2;
@@ -14,7 +17,7 @@ while n>1
         i=i+1;
 
     end
-
+    
 end
 uppath=fliplr(uppath);
 end
