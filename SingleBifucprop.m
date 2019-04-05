@@ -90,9 +90,9 @@ end
 Tempreture=310;
 
 %Delta
-delta=1.38*10^-23*Tempreture*Cc*L/(12*kinematicviscosity*diameterp)*Q.^-1;
+delta=1.38*10^-23*Tempreture*Cc*L/(((d/2)^2)*12*kinematicviscosity*diameterp)*Q.^-1; 
 for i=1:length(delta)
-    if delta < .1
+    if delta(i) < .1
     Pd(i)=6.41*delta(i).^(2/3)-4.8*delta(i)-1.123*delta(i).^(4/3);
     else if .1 < delta < .1653
         Pd=0.164385*(delta(i)^1.15217)*exp(3.94325*exp(-delta(i))  + 0.219155*(ln(delta(i)))^2+ 0.0346876*((ln(delta(i))))^3 + 0.00282789*((ln(delta(i))))^4  + 0.000114505*((ln(delta(i))))^5   + 1.81798*(10)^(-6)*(ln(delta(i)))^6);

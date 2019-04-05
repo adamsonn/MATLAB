@@ -3,12 +3,12 @@
 %SingleBifucprop(.5*10^-4,LDP(10,1)*10^-2,LDP(10,2)*10^-2,LDP(10,3),100)
 adjmatrix=zeros(length(LDP)+1,length(LDP)+1);
 i=1;
-Q=5.360000000000000e-03;
+Q=maxflow/8;
 while i<length(LDP)+1
-    adjmatrix(i,(length(LDP)+1))=SingleBifucprop(Q*.5^max(ceil(log10(abs(LDP(i,4))))),LDP(i,1)*10^-2,LDP(i,2)*10^-2,LDP(i,3),100);
+    adjmatrix(i,(length(LDP)+1))=SingleBifucprop(Q*.5^max(ceil(log10(abs(LDP(i,4))))),LDP(i,1)*10^-3,LDP(i,2)*10^-3,LDP(i,3),100);
     if i<(length(LDP)+1)/2
-        adjmatrix(i,2*i)=(1-(SingleBifucprop(Q*.5^max(ceil(log10(abs(LDP(i,4))))),LDP(i,1)*10^-2,LDP(i,2)*10^-2,LDP(i,3),100)))/2;
-        adjmatrix(i,2*i+1)=(1-(SingleBifucprop(Q*.5^max(ceil(log10(abs(LDP(i,4))))),LDP(i,1)*10^-2,LDP(i,2)*10^-2,LDP(i,3),100)))/2;
+        adjmatrix(i,2*i)=(1-(SingleBifucprop(Q*.5^max(ceil(log10(abs(LDP(i,4))))),LDP(i,1)*10^-3,LDP(i,2)*10^-3,LDP(i,3),100)))/2;
+        adjmatrix(i,2*i+1)=(1-(SingleBifucprop(Q*.5^max(ceil(log10(abs(LDP(i,4))))),LDP(i,1)*10^-3,LDP(i,2)*10^-3,LDP(i,3),100)))/2;
     else
         adjmatrix(i,(length(LDP)+1))=1;
     end
@@ -26,7 +26,7 @@ figure;
 graphplot(mc,'ColorEdges',true);
 
 rng(2); % For reproducibility
-numSteps = 4;
+numSteps = 15;
 X0 = zeros(mc.NumStates,1);
 X0(1) = 10000; % 100 random walks starting from state 1 only
 X = simulate(mc,numSteps,'X0',X0);
@@ -58,11 +58,13 @@ graphplot(sc,'ColorNodes',true);
 i=1;
 y=[1:15];
 
-a=zeros(1,length(X));
+c=zeros(1,length(X));
 while i<=length(X)
     
-    a(i)=sum(ismember(X(:,i),y));
+    c(i)=length(unique(X(:,i)))-1;
     i=i+1;
 end
 
-mean(a)
+mean(c)
+
+sum(c(:) == 6)/10000

@@ -53,15 +53,29 @@ end
 bigboy=matlabFunction(prod(cascadeprop))
 
 
-matA=zeros(length(path)+1,length(path));
+matA=zeros(length(path),length(path));
 i=1;
+
+
 while i<=length(path)
     matA(i,i)=1;
     b(i)=20*(.5)^(i-1);
-    matA(length(path)+1,i)=pathvolume(i);
+    
+    Q=sym(['Q',(num2str(i))]);
+    veq(i)=pathvolume(i)/Q;
+    
     i=i+1;
     
 end
+matA(length(matA),length(matA))=1;
+%b(length(b)+1)=20;
+nonlinconst=matlabFunction(sum(veq)-20)
 b=b';
 
+x0=[.00001,.00001,.00001,.00001,.00001,.00001,.00001];
+lb= [0,0,0,0,0,0,0];
+ub =[.5, .5, .5, .5, .5, .5, .5];
+
+a=sum(veq)
+k=matlabFunction(a)
 
