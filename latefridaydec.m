@@ -1,8 +1,10 @@
+close all
+i=1;
 %Gravitatonal Constant m/s^2 
 gravity=9.81; 
   
-%Flow Rate m^3/s 
-Q=[0.00000005*10^-5:1*10^-8:10*10^-4]; 
+%x1=Q=Flow Rate m^3/s
+Q=[0.00000005*10^-5:1*10^-6:10*10^-4]; 
   
 %Particle Density (water kg/m^3) 
 densityp= 1000; 
@@ -10,7 +12,7 @@ densityp= 1000;
 
 
 %Particle Diameter meters 
-diameterp=3.5*10^-10; 
+diameterp=6*10^-6; 
   
 %Kinematic Vicsoity kg/ms 
 kinematicviscosity=(1.8*10^-5); 
@@ -49,7 +51,7 @@ Re=Vfluid*d/(kinematicviscosity);
 Stk=Vfluid*densityp*diameterp^2*Cc/(18*kinematicviscosity*d); 
   
 %tube angle radians  
-theta=0; 
+theta=50; 
   
 %kappa 
 kappa=(3/4)*(Vsettling*(Vfluid).^-1)*L*cos(theta)/d; 
@@ -82,7 +84,9 @@ Parent=1;
 Pi=1.606*Stk+.0023; 
 
 
-Pi=-.0394+3.7417*((2*Stk*1000*(.9).^3 ).^1.16)
+%Check this out
+
+%Pi=-.0394+3.7417*((2*Stk*1000*(.9).^3 ).^1.16)
  i=1; 
 while i < length(Stk)+1
  if Pi(i)<0
@@ -107,7 +111,7 @@ Tempreture=310;
   
 %Delta 
 delta=1.38*10^-23*Tempreture*Cc*L/(12*kinematicviscosity*diameterp)*Q.^-1; 
-for i=1:length(delta) 
+for i=1:length(Q) 
     if delta(i) < .1 
     Pd(i)=6.41*delta(i).^(2/3)-4.8*delta(i)-1.123*delta(i).^(4/3); 
     else if .1 < delta < .1653 
