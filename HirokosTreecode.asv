@@ -50,76 +50,16 @@ clearvars filename delimiter formatSpec fileID dataArray ans;
 
 
 
-% load rawpoints
-% 
-% load smallas
-
-%  
-% 
-% xyz0 = rawpoints( : , 1:3 ) ;
-% 
-% xyz1 = rawpoints( : , 4:6 ) ;
-% 
-% diam = rawpoints( : ,   7 ) ;
-% 
-%  
-% 
-% indAwy = smallas(:,1) ;
-% 
-% indPar = smallas(:,6) ;
-% 
-% indPar(1) = -1 ;
-% 
-%  
-% 
-% %%
-% 
-%  
-% 
-% plot3([ xyz0(:,1) , xyz1(:,1) ]' ,[ xyz0(:,2) , xyz1(:,2) ]' , [ xyz0(:,3) , xyz1(:,3) ]' ,'ko-' )
-% 
-%  
-% 
-% %%
-% 
-%  
-% 
-% numAwy = size(smallas,1) ;
-% 
-% for kk = 1 : numAwy
-% 
-%     indChi = find( indPar == indAwy(kk) ) ;
-% 
-%     if numel( indChi ) == 2
-% 
-%         xyzNew = mean( [
-% 
-%             xyz1( kk        ,:)
-% 
-%             xyz0( indChi(1) ,:)
-% 
-%             xyz0( indChi(2) ,:)
-% 
-%             ] ) ;
-% 
-%         xyz1(kk,:) = xyzNew ;
-% 
-%         xyz0(indChi(1),:) = xyzNew ;
-% 
-%         xyz0(indChi(2),:) = xyzNew ;
-% 
-%     end
-% 
-% end
-
  
-
 %%
 0
 treeStructure(1,9)=-1;
 IDNumber=treeStructure(:,1);
 Parent=treeStructure(:,9);
-C = setdiff(IDNumber,Parent); 
+C = setdiff(IDNumber,Parent);
+
+%   nodes(nodes(1).RightChild.Index).Parent GetRightChild
+%   nodes(nodes(1).LeftChild.Index).Parent GetLeftChild
 
 % rawpointsFix = [ xyz0 , xyz1 , diam ] ;
 % 
@@ -128,23 +68,377 @@ C = setdiff(IDNumber,Parent);
 %Get all paths back
 i=1;
 pathnumber=1;
-while pathnumber<length(C)+1
-    Endbranch(1)=C(i);
-    Pathback(1,pathnumber)=C(i);
+  Pathback(1,pathnumber)=C(i);
+while pathnumber<length(C)
+    %Endbranch(1)=C(i);
+  
     if Pathback(i,pathnumber)==-1
         pathnumber=pathnumber+1;
+        Pathback(1,pathnumber)=C(pathnumber);
+        
+        i=1;
     else
        Pathback(i+1,pathnumber)=Parent(1+Pathback(i,pathnumber));    
        i=i+1;
     end
 end
 
-for path = pathnumber
-    Pathback(1,pathnumber) = path;
-    while path ~= -1
-         Pathback(i+1,pathnumber)= Parent(1 + path);
-         pa
+ xyz0 = treeStructure( : , 3:5 ) ;
+ 
+ xyz1 = treeStructure( : , 6:8 ) ;
+ 
+ diam = treeStructure( : ,  2 ) ;
+ vector = xyz1 - xyz0;
+ i=1;
+ while i<length(vector)+1
+  Length(i)=norm(vector(i,:));
+  i=1+i;
+ end
+ Length=Length';
+ i=1;
+ 
+ %Calcuclates angles from vector
+  while i<=length(vector)
+  angles(i,1)=acos((vector(i,1))/Length(i));
+  angles(i,2)=acos((vector(i,2))/Length(i));
+  angles(i,3)=acos((vector(i,3))/Length(i));
+  i=1+i;
+  end
+ 
+  
+% Begin ryan code
+import Node;
+addpath('.');
+nodeArray(1:1,1:length(treeStructure)) = Node(1,1,1,1,1,1,1,1,1);
+for i=1:length(treeStructure)
+    nodeArray(i).Diameter = treeStructure(i,2);
+    nodeArray(i).Length = Length(i);
+    nodeArray(i).alpha = angles(i,1);
+    nodeArray(i).beta = angles(i,2);
+    nodeArray(i).gama = angles(i,3);
+    nodeArray(i).Parent = treeStructure(i,9);
+    nodeArray(i).LeftChild = treeStructure(i);
+    nodeArray(i).RightChild = treeStructure(i);
+    obj.Resistance= Length/(diameter)^4;
+    nodeArray(i).Index = i;
+end
+
+nodes(1:1,1:length(treeStructure)) = Node(1,1,1,1,1,1,1,1,1);
+for i=1:length(treeStructure)
+    nodes(i).Length = nodeArray(i).Length;
+    nodes(i).Diameter = nodeArray(i).Diameter;
+    nodes(i).alpha = nodeArray(i).alpha;
+    nodes(i).beta = nodeArray(i).beta;
+    nodes(i).gama = nodeArray(i).gama;
+    nodes(i).Index = i;
+    if treeStructure(i,9) >= 0
+        nodes(i).Parent = nodeArray(treeStructure(i,9) + 1);
+        if isnumeric(nodes(treeStructure(i,9) + 1).LeftChild) == 1
+            nodes(treeStructure(i,9) + 1).LeftChild = nodes(i);
+        else
+            nodes(treeStructure(i,9) + 1).RightChild = nodes(i);
+        end
+    else
+        
     end
 end
 
-    
+% end Ryan Code
+  
+%% Making Flow paths 
+%% mimizing propbability
+
+  
+  %IDnumber2Prob(6)
+  
+  
+  path1=Pathback(:,1);
+  path1=unique(path1);
+ 
+ pathnumber=1;
+%  for pathnumber<length(pathback)
+%     pathlength=Length(1:length(path1));
+%     pathnumber=1+pathnumber;
+%  end
+% % a=downpath(2);
+
+for pathnumber=1:length(C)
+while i<=length(C)
+specificpathres(pathnumber,i)=(Length(i)/(diam(i)^4));
+i=i+1;
+end
+i=1;
+pathnumber=pathnumber+1;
+end
+
+
+
+
+%UNTITLED7 Summary of this function goes here
+%   Detailed explanation goes here
+% i=1;
+% for i=1:length(diam)
+%     
+% %fix over 90 problem
+% % while i<length(LDP)
+% % if LDP(i,3)
+% % LDP(i,3)
+% % 
+% % i=1;
+% % end
+% % while i<length(LDP)
+% % Dont know how to get all the angles right yet
+% % end
+% gravity=9.81;
+% 
+% %Flow Rate m^3/s
+% %Q=[.001:.01:30]
+% %Particle Density (water kg/m^3)
+% densityp= 1000;
+% 
+% %Particle Diameter meters
+% diameterp=3.5*10^-6;
+% 
+% %Kinematic Vicsoity kg/ms
+% kinematicviscosity=(1.8*10^-5);
+% 
+% 
+% %Mean Free Path (air in meters)
+% meanfreepath=.067*10^-6;
+% 
+% % Cunningham Correction Coefficeint
+% Cc=1+2.52*meanfreepath/diameterp;
+% 
+% % Settling Velocity acceleration is zero
+% Vsettling=Cc*densityp*gravity*diameterp.^2/(18*kinematicviscosity);
+% 
+% %Settling time
+% Tsettling=densityp*gravity*diameterp.^2/(18*kinematicviscosity);
+% 
+% %Number of Generations
+% N=0;
+% 
+% %Tube Diamter (meters)
+% 
+% %syms Q L d Dd phi
+% 
+% syms Q
+% 
+% L=Length(i);
+% d=diam(i);
+% 
+% phi=angles(i,1);;
+% %Tube Length (meters)
+% 
+% %Fluid Velocity (average)
+% Vfluid=Q/(pi*(d/2)^2);
+% 
+% % Reynlods Number
+% Re=Vfluid*d/(kinematicviscosity);
+% 
+% %Stokes Number
+% Stk=Vfluid*densityp*diameterp^2*Cc/(18*kinematicviscosity*d);
+% 
+% %tube angle radians 
+% theta=phi;
+% 
+% %kappa
+% kappa=(3/4)*(Vsettling*(Vfluid).^-1)*L*cos(theta)/d;
+% 
+% %Probability of gravitational setimentation
+% 
+% % for i= 1:length(Q)
+% %     
+% %     Ps(i)=(2/pi)*((2*kappa(i)*(1-kappa(i).^(2/3)).^(1/2))-(kappa(i).^(1/3))*((1-kappa(i).^(2/3)).^(1/2))+(asin((kappa(i).^(1/3)))));
+% %     
+% % %     if Ps(i)>1
+% % %         Ps(i)=1;
+% % %     end
+% % %     if Ps(i)<0
+% % %         Ps(i)=0;
+% % %     end
+% % end
+% Ps=(2/pi)*((2*kappa*(1-kappa.^(2/3)).^(1/2))-(kappa.^(1/3))*((1-kappa.^(2/3)).^(1/2))+(asin((kappa.^(1/3)))));
+% 
+% 
+% 
+% %Daughter generation
+% Daughter=.8;
+% 
+% %Parent generation
+% Parent=1;
+% 
+% %Probability of impaction deposition
+% 
+% 
+% Pi=1.606*Stk+.0023;
+% 
+% % for i=length(Stk)
+% %  if Pi(i)>1
+% %         Pi(i)=1;
+% %  end
+% % end
+%     
+% 
+% %tempreture calvin
+% Tempreture=310;
+% 
+% %Delta
+% 
+% delta=1.38*10^-23*Tempreture*Cc*L/(12*kinematicviscosity*diameterp)*Q.^-1;
+% 
+% %
+% %Pd=piecewise(delta<.1, 6.41*delta.^(2/3)-4.8*delta-1.123*delta.^(4/3), .1653>delta>0.1, 0.164385*(delta^1.15217)*exp(3.94325*exp(-delta)  + 0.219155*(log(delta))^2+ 0.0346876*((log(delta)))^3 + 0.00282789*((log(delta)))^4  + 0.000114505*((log(delta)))^5   + 1.81798*(10)^(-6)*(log(delta))^6),delta >.1653,1);
+% % for i=1:length(delta)
+% %     if delta < .1
+% %     Pd(i)=6.41*delta(i).^(2/3)-4.8*delta(i)-1.123*delta(i).^(4/3);
+% %     else if .1 < delta < .1653
+%          Pd=0.164385*(delta^1.15217)*exp(3.94325*exp(-delta)  + 0.219155*(log(delta))^2+ 0.0346876*((log(delta)))^3 + 0.00282789*((log(delta)))^4  + 0.000114505*((log(delta)))^5   + 1.81798*(10)^(-6)*(log(delta))^6);
+% %     else
+% %             Pd(i)=1;
+% %         end
+% %     end
+% % end
+% 
+% % for i=length(Q)
+% % if Pd(i)>1
+% %         Pd(i)=1;
+% %     end
+% %     if Pd(i)<0
+% %         Pd(i)=0;
+% %     end
+% % end
+% 
+% % for i=1:length(Q)
+% %     totalprob(i)=1-(1-Pi(i))*(1-Pd(i))*(1-Ps(i));
+% % end
+% 
+% %totalprob(i)=1-(1-Pi(i))*(1-Pd(i))*(1-Ps(i));
+% 
+% %totalprob=real(1-(1-Pi)*(1-Pd)*(1-Ps));
+% totalprob=real(1-(1-Pd)*(1-Ps));
+% %b=gradient(totalprob);
+% totalprobf = matlabFunction(totalprob);
+% %bf=matlabFunction(b);
+% 
+%  %nff=@(Q)totalprobf(Q);
+% 
+%  Q0 = [0.5];
+%  options = optimoptions('fminunc','Algorithm','quasi-newton');
+%  [x, fval] = fminunc(totalprobf,Q0,options);
+%  optimalq(i)=x;
+%  
+%  fvae(i)=fval;
+%  i=i+1;
+% end
+
+ 
+%Volume=Length.*(3.14*(diam/2).^2);
+
+% i=1;
+% while i<length(LDP)+1
+% pathres(i)=(LDP(i,1)/(LDP(i,2)^4));
+% i=i+1;
+% end
+% sum(pathres);
+% % 
+% %flow in m/s
+% i=2;
+% maxflow=10*10^-4;
+% treeflow=zeros(1,length(LDP));
+% treeflow(1)=maxflow;
+% while i<length(pathres)+1
+%     if mod(i,2)==0
+%         mypath=downpath(i);
+%         neighborpath=downpath(i+1);
+%         treeflow(i)=treeflow(i/2)*(1-sum(pathres(mypath(:)))/(sum(pathres(mypath(:)))+sum(pathres(neighborpath(:)))));
+%         i=i+1;
+%     else
+%         mypath=downpath(i);
+%         neighborpath=downpath(i-1);
+%         treeflow(i)=treeflow((i-1)/2)*(1-sum(pathres(mypath(:)))/(sum(pathres(mypath(:)))+sum(pathres(neighborpath(:)))));
+%         i=i+1;
+%     end
+% end
+% 
+% 
+% i=1;
+% 
+% Q=[0.5*10^-5:1*10^-5:10*10^-4];
+% while i<length(LDP)+1
+%     propline=(real(SingleBifucprop([0.5*10^-5:1*10^-5:10*10^-4],LDP(i,1)*10^-3,LDP(i,2)*10^-3,LDP(i,3),LDP(i,4))));
+%     [chance,index]=min(propline);
+%     optimalflow(i)=Q(index);
+%     i=i+1;
+% end
+% 
+% i=1;
+% while i<length(optimalflow)+1
+%     if optimalflow(i)>=treeflow(i)
+%         optimalflowlim(i)=treeflow(i);
+%         else optimalflowlim(i)=optimalflow(i);
+%     end
+%     i=i+1;
+%    
+% end
+% 
+% 
+% i=1;
+% while i<length(optimalflowlim)+1
+%     Qmouth(i)=(optimalflowlim(i)/treeflow(i))*maxflow;
+%     i=i+1;
+% end
+% 
+% 
+% adjmatrix=zeros(length(LDP)+2,length(LDP)+2);
+% i=1;
+% while i<length(LDP)+1
+%     adjmatrix(i,(length(LDP)+1))=abs(real(SingleBifucprop(treeflow(i),LDP(i,1)*10^-3,LDP(i,2)*10^-3,LDP(i,3),100)));
+%     if i<(length(LDP)+1)/2
+%         adjmatrix(i,2*i)=abs(real((1-(SingleBifucprop(treeflow(i),LDP(i,1)*10^-3,LDP(i,2)*10^-3,LDP(i,3),100)))/2));
+%         adjmatrix(i,2*i+1)=abs(real((1-(SingleBifucprop(treeflow(i),LDP(i,1)*10^-3,LDP(i,2)*10^-3,LDP(i,3),100)))/2));
+%     else
+%         adjmatrix(i,(length(LDP)+1))=1-abs(real((1-(SingleBifucprop(treeflow(i),LDP(i,1)*10^-3,LDP(i,2)*10^-3,LDP(i,3),100)))));
+%         adjmatrix(i,(length(LDP)+2))=abs(real((1-(SingleBifucprop(treeflow(i),LDP(i,1)*10^-3,LDP(i,2)*10^-3,LDP(i,3),100)))));
+%     end
+%     i=i+1;
+%     
+% end
+% 
+% i=1;
+% %rng(5)
+% %while i<240
+%   %  a=randi([32 63],1);
+%   %  b=randi([32 63],1);
+%   %  adjmatrix(a,b)=adjmatrix(a,65)/2;
+%   %  adjmatrix(a,64)=adjmatrix(a,64);
+%   %  adjmatrix(a,65)=(adjmatrix(a,65)-adjmatrix(a,65)/2);
+%   %  i=i+1;
+% %end
+% 
+% 
+% adjmatrix((length(LDP)+1),1)=0;
+% adjmatrix((length(LDP)+1),(length(LDP)+1))=1;
+% adjmatrix((length(LDP)+2),(length(LDP)+2))=1;
+% mc = dtmc(adjmatrix);
+% 
+% stateNames = ["Deposit" "1" "11" "12" "111" "112" "121" "122" "Escape"];
+% %mc.StateNames = stateNames;
+% 
+% 
+% rng(2); % For reproducibility
+% % numSteps = 15;
+% X0 = zeros(mc.NumStates,1);
+% X0(1) = 10000; % 100 random walks starting from state 1 only
+% X = simulate(mc,numSteps,'X0',X0);
+% 
+% 
+% 
+% 
+% %figure;
+% %imagesc(mc.adjmatrix);
+% %colormap(jet);
+% %axis square;
+% %colorbar;
+
+
