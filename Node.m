@@ -9,7 +9,7 @@ classdef Node
       Length
       alpha
       beta
-      gama
+      gamma
       Parent
       LeftChild
       RightChild
@@ -19,7 +19,7 @@ classdef Node
    end
    
        methods
-        function obj = Node(diameter, parent, leftChild, rightChild, index, Length, alpha, beta, gama)
+        function obj = Node(diameter, parent, leftChild, rightChild, index, Length, alpha, beta, gamma)
             obj.Diameter = diameter;
             obj.Parent = parent;
             obj.LeftChild = leftChild;
@@ -28,8 +28,12 @@ classdef Node
             obj.Length = Length;
             obj.alpha = alpha;
             obj.beta = beta;
-            obj.gama = gama;
+            obj.gamma = gamma;
             obj.Resistance= Length/(diameter)^4;
+        end
+        
+        function probablity = getProbability(node, flow)
+             probablity = abs(real(SingleBifucprop(flow,node.Length*10^-2,node.Diameter*10^-2,node.gamma,node.Parent.Diameter)));
         end
     end
 end

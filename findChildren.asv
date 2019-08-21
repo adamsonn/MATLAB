@@ -1,7 +1,0 @@
-function [children] = findChildren(node, nodeArray)
-    if (isnumeric(node.LeftChild)==1 && isNumeric(node.RightChild) == 1)
-        children = 1;
-    else
-        children = getChildren(nodeArray2(nodeArray2(1).LeftChild.Index).Parent) + getChildren(nodeArray2(nodeArray2(1).RightChild.Index).Parent);
-    end
-end

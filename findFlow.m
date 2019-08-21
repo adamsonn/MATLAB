@@ -21,8 +21,9 @@ function [flow] = findFlow(initialFlow,node, nodeArray)
         %fprintf('%d,%f\n', node.Index, retFlow);
         returnString = [returnString,sprintf('%d,%f,\n', node.Index, initialFlow)];
         if (node.Index==1)
-            fprintf(returnString);
+           % fprintf(returnString);
             retFlow = returnString;
+            clear returnString;
         end
         flow = retFlow;
     end

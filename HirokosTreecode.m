@@ -52,7 +52,7 @@ clearvars filename delimiter formatSpec fileID dataArray ans;
 
  
 %%
-0
+0;
 treeStructure(1,9)=-1;
 IDNumber=treeStructure(:,1);
 Parent=treeStructure(:,9);
@@ -101,7 +101,8 @@ end
   while i<=length(vector)
   angles(i,1)=acos((vector(i,1))/Length(i));
   angles(i,2)=acos((vector(i,2))/Length(i));
-  angles(i,3)=acos((vector(i,3))/Length(i));
+  %horizontal angle
+  angles(i,3)=asin((vector(i,3))/Length(i));
   i=1+i;
   end
  
@@ -115,7 +116,7 @@ for i=1:length(treeStructure)
     nodeArray(i).Length = Length(i);
     nodeArray(i).alpha = angles(i,1);
     nodeArray(i).beta = angles(i,2);
-    nodeArray(i).gama = angles(i,3);
+    nodeArray(i).gamma = angles(i,3);
     nodeArray(i).Parent = treeStructure(i,9);
     nodeArray(i).LeftChild = treeStructure(i);
     nodeArray(i).RightChild = treeStructure(i);
@@ -128,7 +129,7 @@ for i=1:length(treeStructure)
     nodes(i).Diameter = nodeArray(i).Diameter;
     nodes(i).alpha = nodeArray(i).alpha;
     nodes(i).beta = nodeArray(i).beta;
-    nodes(i).gama = nodeArray(i).gama;
+    nodes(i).gamma = nodeArray(i).gamma;
     nodes(i).Resistance = nodeArray(i).Length/nodeArray(i).Diameter;
     nodes(i).Index = i;
     if treeStructure(i,9) >= 0
@@ -142,6 +143,8 @@ for i=1:length(treeStructure)
         
     end
 end
+
+nodes(1).Parent = nodes(1);
 
 flowMatrix=sscanf(findFlow(300,nodes(1), nodes), '%g,', [2, inf]).';
 flowMatrix=sortrows(flowMatrix);
@@ -159,184 +162,60 @@ flowMatrix=unique(flowMatrix,'rows');
   path1=unique(path1);
  
  pathnumber=1;
+%Fix first generation having no parent
+  Maxflowprop(1)=abs(real(SingleBifucprop(flowMatrix(1,2),nodes(1).Length*10^-2,nodes(1).Diameter*10^-2,nodes(1).gamma,nodes(1).Diameter)));
+ %calculates minimum probability
+ for i=1:length(nodes)
+     Maxflowprop(i)=getProbability(nodes(i),flowMatrix(i,2));
+%    =abs(real(SingleBifucprop(flowMatrix(i,2),nodes(i).Length*10^-2,nodes(i).Diameter*10^-2,nodes(i).gamma,nodes(i).Parent.Diameter)));
+ %   i=i+1;
+ end
+
+adjmatrix=zeros(length(nodes)+2,length(nodes)+2);
+
+ for i=1:length(nodes)
+     left=nodes(i).LeftChild;
+     right=nodes(i).RightChild;
+     if isnumeric(left) == 0
+        adjmatrix(i,length(nodes)+1)=getProbability(nodes(i),flowMatrix(i,2)); %chance of capture
+        adjmatrix(i,left.Index)=(1-getProbability(nodes(i),flowMatrix(i,2)))*(flowMatrix(left.Index,2)/(flowMatrix(left.Index,2)+flowMatrix(right.Index,2)));
+     end
+     if isnumeric(right) == 0
+         adjmatrix(i,length(nodes)+1)=getProbability(nodes(i),flowMatrix(i,2)); %chance of capture
+         adjmatrix(i,right.Index)=(1-getProbability(nodes(i),flowMatrix(i,2)))*(flowMatrix(right.Index,2)/(flowMatrix(left.Index,2)+flowMatrix(right.Index,2)));
+     end
+     if isnumeric(left) && isnumeric(right) % Leaf
+        adjmatrix(i,length(nodes)+1)=getProbability(nodes(i),flowMatrix(i,2)); %chance of capture
+        adjmatrix(i,length(nodes)+2)=1 - getProbability(nodes(i),flowMatrix(i,2)); %chance of escape
+     end
+ end
+ 
+adjmatrix(length(nodes)+1,length(nodes)+1)=1;
+adjmatrix(length(nodes)+2,length(nodes)+2)=1;
+
+mc = dtmc(adjmatrix);
+
+rng(2); % For reproducibility
+numSteps = 12;
+x0 = zeros(1,mc.NumStates);
+x0(1) = 100; % 100 random walks starting from state 1 only
+X = simulate(mc,numSteps,'X0',x0);
 %  for pathnumber<length(pathback)
 %     pathlength=Length(1:length(path1));
 %     pathnumber=1+pathnumber;
 %  end
 % % a=downpath(2);
 
-for pathnumber=1:length(C)
-while i<=length(C)
-specificpathres(pathnumber,i)=(Length(i)/(diam(i)^4));
-i=i+1;
-end
-i=1;
-pathnumber=pathnumber+1;
-end
-
-
-
-
-%UNTITLED7 Summary of this function goes here
-%   Detailed explanation goes here
+% for pathnumber=1:length(C)
+% while i<=length(C)
+% specificpathres(pathnumber,i)=(Length(i)/(diam(i)^4));
+% i=i+1;
+% end
 % i=1;
-% for i=1:length(diam)
-%     
-% %fix over 90 problem
-% % while i<length(LDP)
-% % if LDP(i,3)
-% % LDP(i,3)
-% % 
-% % i=1;
-% % end
-% % while i<length(LDP)
-% % Dont know how to get all the angles right yet
-% % end
-% gravity=9.81;
-% 
-% %Flow Rate m^3/s
-% %Q=[.001:.01:30]
-% %Particle Density (water kg/m^3)
-% densityp= 1000;
-% 
-% %Particle Diameter meters
-% diameterp=3.5*10^-6;
-% 
-% %Kinematic Vicsoity kg/ms
-% kinematicviscosity=(1.8*10^-5);
-% 
-% 
-% %Mean Free Path (air in meters)
-% meanfreepath=.067*10^-6;
-% 
-% % Cunningham Correction Coefficeint
-% Cc=1+2.52*meanfreepath/diameterp;
-% 
-% % Settling Velocity acceleration is zero
-% Vsettling=Cc*densityp*gravity*diameterp.^2/(18*kinematicviscosity);
-% 
-% %Settling time
-% Tsettling=densityp*gravity*diameterp.^2/(18*kinematicviscosity);
-% 
-% %Number of Generations
-% N=0;
-% 
-% %Tube Diamter (meters)
-% 
-% %syms Q L d Dd phi
-% 
-% syms Q
-% 
-% L=Length(i);
-% d=diam(i);
-% 
-% phi=angles(i,1);;
-% %Tube Length (meters)
-% 
-% %Fluid Velocity (average)
-% Vfluid=Q/(pi*(d/2)^2);
-% 
-% % Reynlods Number
-% Re=Vfluid*d/(kinematicviscosity);
-% 
-% %Stokes Number
-% Stk=Vfluid*densityp*diameterp^2*Cc/(18*kinematicviscosity*d);
-% 
-% %tube angle radians 
-% theta=phi;
-% 
-% %kappa
-% kappa=(3/4)*(Vsettling*(Vfluid).^-1)*L*cos(theta)/d;
-% 
-% %Probability of gravitational setimentation
-% 
-% % for i= 1:length(Q)
-% %     
-% %     Ps(i)=(2/pi)*((2*kappa(i)*(1-kappa(i).^(2/3)).^(1/2))-(kappa(i).^(1/3))*((1-kappa(i).^(2/3)).^(1/2))+(asin((kappa(i).^(1/3)))));
-% %     
-% % %     if Ps(i)>1
-% % %         Ps(i)=1;
-% % %     end
-% % %     if Ps(i)<0
-% % %         Ps(i)=0;
-% % %     end
-% % end
-% Ps=(2/pi)*((2*kappa*(1-kappa.^(2/3)).^(1/2))-(kappa.^(1/3))*((1-kappa.^(2/3)).^(1/2))+(asin((kappa.^(1/3)))));
-% 
-% 
-% 
-% %Daughter generation
-% Daughter=.8;
-% 
-% %Parent generation
-% Parent=1;
-% 
-% %Probability of impaction deposition
-% 
-% 
-% Pi=1.606*Stk+.0023;
-% 
-% % for i=length(Stk)
-% %  if Pi(i)>1
-% %         Pi(i)=1;
-% %  end
-% % end
-%     
-% 
-% %tempreture calvin
-% Tempreture=310;
-% 
-% %Delta
-% 
-% delta=1.38*10^-23*Tempreture*Cc*L/(12*kinematicviscosity*diameterp)*Q.^-1;
-% 
-% %
-% %Pd=piecewise(delta<.1, 6.41*delta.^(2/3)-4.8*delta-1.123*delta.^(4/3), .1653>delta>0.1, 0.164385*(delta^1.15217)*exp(3.94325*exp(-delta)  + 0.219155*(log(delta))^2+ 0.0346876*((log(delta)))^3 + 0.00282789*((log(delta)))^4  + 0.000114505*((log(delta)))^5   + 1.81798*(10)^(-6)*(log(delta))^6),delta >.1653,1);
-% % for i=1:length(delta)
-% %     if delta < .1
-% %     Pd(i)=6.41*delta(i).^(2/3)-4.8*delta(i)-1.123*delta(i).^(4/3);
-% %     else if .1 < delta < .1653
-%          Pd=0.164385*(delta^1.15217)*exp(3.94325*exp(-delta)  + 0.219155*(log(delta))^2+ 0.0346876*((log(delta)))^3 + 0.00282789*((log(delta)))^4  + 0.000114505*((log(delta)))^5   + 1.81798*(10)^(-6)*(log(delta))^6);
-% %     else
-% %             Pd(i)=1;
-% %         end
-% %     end
-% % end
-% 
-% % for i=length(Q)
-% % if Pd(i)>1
-% %         Pd(i)=1;
-% %     end
-% %     if Pd(i)<0
-% %         Pd(i)=0;
-% %     end
-% % end
-% 
-% % for i=1:length(Q)
-% %     totalprob(i)=1-(1-Pi(i))*(1-Pd(i))*(1-Ps(i));
-% % end
-% 
-% %totalprob(i)=1-(1-Pi(i))*(1-Pd(i))*(1-Ps(i));
-% 
-% %totalprob=real(1-(1-Pi)*(1-Pd)*(1-Ps));
-% totalprob=real(1-(1-Pd)*(1-Ps));
-% %b=gradient(totalprob);
-% totalprobf = matlabFunction(totalprob);
-% %bf=matlabFunction(b);
-% 
-%  %nff=@(Q)totalprobf(Q);
-% 
-%  Q0 = [0.5];
-%  options = optimoptions('fminunc','Algorithm','quasi-newton');
-%  [x, fval] = fminunc(totalprobf,Q0,options);
-%  optimalq(i)=x;
-%  
-%  fvae(i)=fval;
-%  i=i+1;
+% pathnumber=pathnumber+1;
 % end
 
- 
-%Volume=Length.*(3.14*(diam/2).^2);
+
 
 % i=1;
 % while i<length(LDP)+1
